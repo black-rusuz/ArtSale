@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.sfedu.artsale.model.bean.*;
 import ru.sfedu.artsale.utils.TestData;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.util.List;
 
 abstract class CrudTest extends TestData {
     AbstractDataProvider dataProvider;
-    Logger log = LogManager.getLogger(this.getClass());
 
     @BeforeEach
     void setUp() throws IOException {
@@ -37,6 +37,8 @@ abstract class CrudTest extends TestData {
 
         dataProvider.insertOrder(o1);
         dataProvider.insertOrder(o2);
+        dataProvider.insertOrder(o3);
+        dataProvider.insertOrder(o4);
     }
 
     @AfterEach
@@ -61,111 +63,286 @@ abstract class CrudTest extends TestData {
 
         dataProvider.deleteOrder(o1.getId());
         dataProvider.deleteOrder(o2.getId());
+        dataProvider.deleteOrder(o3.getId());
+        dataProvider.deleteOrder(o4.getId());
     }
 
     @Test
-    void test() {
-        log.info(dataProvider.insertUser(u1));
-    }
-
-    @Test
-    void getUsers() {
+    void getUsersPos() {
         Assertions.assertEquals(List.of(u1, u2), dataProvider.getUsers());
     }
 
     @Test
-    void getUser() {
+    void getUsersNeg() {
+        Assertions.assertNotEquals(List.of(u1), dataProvider.getUsers());
     }
 
     @Test
-    void insertUser() {
+    void getUserPos() {
+        Assertions.assertEquals(u1, dataProvider.getUser(u1.getId()));
     }
 
     @Test
-    void deleteUser() {
+    void getUserNeg() {
+        Assertions.assertNotEquals(u1, dataProvider.getUser(u2.getId()));
     }
 
     @Test
-    void updateUser() {
+    void insertUserPos() {
+        User user = new User(99, "James Doe", "123", "123", "123");
+        Assertions.assertEquals(user.getId(), dataProvider.insertUser(user));
+        dataProvider.deleteUser(user.getId());
     }
 
     @Test
-    void getOrders() {
+    void insertUserNeg() {
+        long oldId = u1.getId();
+        Assertions.assertNotEquals(oldId, dataProvider.insertUser(u1));
+        dataProvider.deleteUser(oldId);
     }
 
     @Test
-    void getOrder() {
+    void deleteUserPos() {
+        Assertions.assertTrue(dataProvider.deleteUser(u1.getId()));
     }
 
     @Test
-    void insertOrder() {
+    void deleteUserNeg() {
+        Assertions.assertFalse(dataProvider.deleteUser(99));
     }
 
     @Test
-    void deleteOrder() {
+    void updateUserPos() {
+        u1.setName("James Doe");
+        Assertions.assertTrue(dataProvider.updateUser(u1));
     }
 
     @Test
-    void updateOrder() {
+    void updateUserNeg() {
+        User user = new User(99, "James Doe", "123", "123", "123");
+        Assertions.assertFalse(dataProvider.updateUser(user));
     }
 
     @Test
-    void getProducts() {
+    void getProductsPos() {
+        Assertions.assertEquals(List.of(p1, p2, p3, p4), dataProvider.getProducts());
     }
 
     @Test
-    void getProduct() {
+    void getProductsNeg() {
+        Assertions.assertNotEquals(List.of(p1), dataProvider.getProducts());
     }
 
     @Test
-    void insertProduct() {
+    void getProductPos() {
+        Assertions.assertEquals(p1, dataProvider.getProduct(p1.getId()));
     }
 
     @Test
-    void deleteProduct() {
+    void getProductNeg() {
+        Assertions.assertNotEquals(p1, dataProvider.getProduct(p2.getId()));
     }
 
     @Test
-    void updateProduct() {
+    void insertProductPos() {
+        Product product = new Product(99, "Hummer", 10);
+        Assertions.assertEquals(product.getId(), dataProvider.insertProduct(product));
+        dataProvider.deleteProduct(product.getId());
     }
 
     @Test
-    void getCreationKits() {
+    void insertProductNeg() {
+        long oldId = p1.getId();
+        Assertions.assertNotEquals(oldId, dataProvider.insertProduct(p1));
+        dataProvider.deleteProduct(oldId);
     }
 
     @Test
-    void getCreationKit() {
+    void deleteProductPos() {
+        Assertions.assertTrue(dataProvider.deleteProduct(p1.getId()));
     }
 
     @Test
-    void insertCreationKit() {
+    void deleteProductNeg() {
+        Assertions.assertFalse(dataProvider.deleteProduct(99));
     }
 
     @Test
-    void deleteCreationKit() {
+    void updateProductPos() {
+        p1.setName("James Doe");
+        Assertions.assertTrue(dataProvider.updateProduct(p1));
     }
 
     @Test
-    void updateCreationKit() {
+    void updateProductNeg() {
+        Product product = new Product(99, "Hummer", 10);
+        Assertions.assertFalse(dataProvider.updateProduct(product));
     }
 
     @Test
-    void getEndProducts() {
+    void getCreationKitsPos() {
+        Assertions.assertEquals(List.of(ck1, ck2, ck3, ck4), dataProvider.getCreationKits());
     }
 
     @Test
-    void getEndProduct() {
+    void getCreationKitsNeg() {
+        Assertions.assertNotEquals(List.of(ck1), dataProvider.getCreationKits());
     }
 
     @Test
-    void insertEndProduct() {
+    void getCreationKitPos() {
+        Assertions.assertEquals(ck1, dataProvider.getCreationKit(ck1.getId()));
     }
 
     @Test
-    void deleteEndProduct() {
+    void getCreationKitNeg() {
+        Assertions.assertNotEquals(ck1, dataProvider.getCreationKit(ck2.getId()));
     }
 
     @Test
-    void updateEndProduct() {
+    void insertCreationKitPos() {
+        CreationKit creationKit = new CreationKit(99, "James Doe", 10, "123", "123");
+        Assertions.assertEquals(creationKit.getId(), dataProvider.insertCreationKit(creationKit));
+        dataProvider.deleteCreationKit(creationKit.getId());
+    }
+
+    @Test
+    void insertCreationKitNeg() {
+        long oldId = ck1.getId();
+        Assertions.assertNotEquals(oldId, dataProvider.insertCreationKit(ck1));
+        dataProvider.deleteCreationKit(oldId);
+    }
+
+    @Test
+    void deleteCreationKitPos() {
+        Assertions.assertTrue(dataProvider.deleteCreationKit(ck1.getId()));
+    }
+
+    @Test
+    void deleteCreationKitNeg() {
+        Assertions.assertFalse(dataProvider.deleteCreationKit(99));
+    }
+
+    @Test
+    void updateCreationKitPos() {
+        ck1.setName("James Doe");
+        Assertions.assertTrue(dataProvider.updateCreationKit(ck1));
+    }
+
+    @Test
+    void updateCreationKitNeg() {
+        CreationKit creationKit = new CreationKit(99, "James Doe", 10, "123", "123");
+        Assertions.assertFalse(dataProvider.updateCreationKit(creationKit));
+    }
+
+    @Test
+    void getEndProductsPos() {
+        Assertions.assertEquals(List.of(ep1, ep2, ep3, ep4), dataProvider.getEndProducts());
+    }
+
+    @Test
+    void getEndProductsNeg() {
+        Assertions.assertNotEquals(List.of(ep1), dataProvider.getEndProducts());
+    }
+
+    @Test
+    void getEndProductPos() {
+        Assertions.assertEquals(ep1, dataProvider.getEndProduct(ep1.getId()));
+    }
+
+    @Test
+    void getEndProductNeg() {
+        Assertions.assertNotEquals(ep1, dataProvider.getEndProduct(ep2.getId()));
+    }
+
+    @Test
+    void insertEndProductPos() {
+        EndProduct endProduct = new EndProduct(99, "James Doe", 10, 10);
+        Assertions.assertEquals(endProduct.getId(), dataProvider.insertEndProduct(endProduct));
+        dataProvider.deleteEndProduct(endProduct.getId());
+    }
+
+    @Test
+    void insertEndProductNeg() {
+        long oldId = ep1.getId();
+        Assertions.assertNotEquals(oldId, dataProvider.insertEndProduct(ep1));
+        dataProvider.deleteEndProduct(oldId);
+    }
+
+    @Test
+    void deleteEndProductPos() {
+        Assertions.assertTrue(dataProvider.deleteEndProduct(ep1.getId()));
+    }
+
+    @Test
+    void deleteEndProductNeg() {
+        Assertions.assertFalse(dataProvider.deleteEndProduct(99));
+    }
+
+    @Test
+    void updateEndProductPos() {
+        ep1.setName("James Doe");
+        Assertions.assertTrue(dataProvider.updateEndProduct(ep1));
+    }
+
+    @Test
+    void updateEndProductNeg() {
+        EndProduct endProduct = new EndProduct(99, "James Doe", 10, 10);
+        Assertions.assertFalse(dataProvider.updateEndProduct(endProduct));
+    }
+    @Test
+    void getOrdersPos() {
+        Assertions.assertEquals(List.of(o1, o2, o3, o4), dataProvider.getOrders());
+    }
+
+    @Test
+    void getOrdersNeg() {
+        Assertions.assertNotEquals(List.of(o1), dataProvider.getOrders());
+    }
+
+    @Test
+    void getOrderPos() {
+        Assertions.assertEquals(o1, dataProvider.getOrder(o1.getId()));
+    }
+
+    @Test
+    void getOrderNeg() {
+        Assertions.assertNotEquals(o1, dataProvider.getOrder(o2.getId()));
+    }
+
+    @Test
+    void insertOrderPos() {
+        Order order = new Order(99, u1, p1);
+        Assertions.assertEquals(order.getId(), dataProvider.insertOrder(order));
+        dataProvider.deleteOrder(order.getId());
+    }
+
+    @Test
+    void insertOrderNeg() {
+        long oldId = o1.getId();
+        Assertions.assertNotEquals(oldId, dataProvider.insertOrder(o1));
+        dataProvider.deleteOrder(oldId);
+    }
+
+    @Test
+    void deleteOrderPos() {
+        Assertions.assertTrue(dataProvider.deleteOrder(o1.getId()));
+    }
+
+    @Test
+    void deleteOrderNeg() {
+        Assertions.assertFalse(dataProvider.deleteOrder(99));
+    }
+
+    @Test
+    void updateOrderPos() {
+        o1.setCustomer(u2);
+        Assertions.assertTrue(dataProvider.updateOrder(o1));
+    }
+
+    @Test
+    void updateOrderNeg() {
+        Order order = new Order(99, u1, p1);
+        Assertions.assertFalse(dataProvider.updateOrder(order));
     }
 }

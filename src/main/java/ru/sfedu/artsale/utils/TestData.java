@@ -16,12 +16,13 @@ public class TestData {
     public CreationKit ck3 = new CreationKit(33, "Kit 3", 200, "DIY", "Glue gun, glue sticks");
     public CreationKit ck4 = new CreationKit(34, "Kit 4", 250, "Sculpture", "Hummer, dust");
 
-    public EndProduct ep1 = new EndProduct(31, "Painting", 1000, 6);
-    public EndProduct ep2 = new EndProduct(31, "Sculpture", 2500, 12);
-    public EndProduct ep3 = new EndProduct(31, "Carpet", 2000, 24);
-    public EndProduct ep4 = new EndProduct(31, "Vase", 750, 36);
+    public EndProduct ep1 = new EndProduct(41, "Painting", 1000, 6);
+    public EndProduct ep2 = new EndProduct(42, "Sculpture", 2500, 12);
+    public EndProduct ep3 = new EndProduct(43, "Carpet", 2000, 24);
+    public EndProduct ep4 = new EndProduct(44, "Vase", 750, 36);
 
-    public Order o1 = new Order(21, u1, p1);
-    public Order o2 = new Order(22, u2, ck1);
-    public Order o3 = new Order(23, u2, ep1);
+    public Order o1 = new Order(51, u1, p1);
+    public Order o2 = new Order(52, u2, p2);
+    public Order o3 = new Order(53, u1, ck1);
+    public Order o4 = new Order(54, u2, ep1);
 }

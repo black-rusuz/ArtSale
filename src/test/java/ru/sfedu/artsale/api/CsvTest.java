@@ -9,5 +9,6 @@ public class CsvTest extends CrudTest {
     @BeforeEach
     void setUp() throws IOException {
         dataProvider = new DataProviderCsv();
+        super.setUp();
     }
 }

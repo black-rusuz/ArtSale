@@ -9,5 +9,6 @@ public class XmlTest extends CrudTest {
     @BeforeEach
     void setUp() throws IOException {
         dataProvider = new DataProviderXml();
+        super.setUp();
     }
 }

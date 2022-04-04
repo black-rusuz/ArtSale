@@ -9,5 +9,6 @@ public class JdbcTest extends CrudTest {
     @BeforeEach
     void setUp() throws IOException {
         dataProvider = new DataProviderJdbc();
+        super.setUp();
     }
 }
