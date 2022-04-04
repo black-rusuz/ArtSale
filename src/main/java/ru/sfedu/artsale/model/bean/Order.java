@@ -1,11 +1,13 @@
 package ru.sfedu.artsale.model.bean;
 
 import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import ru.sfedu.artsale.utils.ProductConverter;
+import ru.sfedu.artsale.utils.UserConverter;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 @Element
@@ -16,11 +18,11 @@ public class Order implements Serializable {
     private long id;
 
     @Element
-    @CsvBindByPosition(position = 1)
+    @CsvCustomBindByPosition(position = 1, converter = UserConverter.class)
     private User customer = new User();
 
     @Element
-    @CsvBindByPosition(position = 2)
+    @CsvCustomBindByPosition(position = 2, converter = ProductConverter.class)
     private Product product = new Product();
 
     public Order() {
