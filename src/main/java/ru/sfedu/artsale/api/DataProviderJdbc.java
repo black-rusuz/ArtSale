@@ -17,14 +17,23 @@ public class DataProviderJdbc extends AbstractDataProvider{
     private final String password = ConfigurationUtil.getConfigurationEntry(Constants.H2_PASSWORD);
 
     protected DataProviderJdbc() throws IOException {
+        try {
+            write(User.toCreateTableString());
+            write(Product.toCreateTableString());
+            write(CreationKit.toCreateTableString());
+            write(EndProduct.toCreateTableString());
+            write(Order.toCreateTableString());
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private <T> List<T> read(Class<T> type) {
-        return read(type, JdbcUtil.selectAllFromTable(type.getSimpleName()));
+        return read(type, JdbcUtil.selectAllFromTable(JdbcUtil.tablePrefix + type.getSimpleName()));
     }
 
     private <T> List<T> read(Class<T> type, long id) {
-        return read(type, JdbcUtil.selectFromTableById(type.getSimpleName(), id));
+        return read(type, JdbcUtil.selectFromTableById(JdbcUtil.tablePrefix + type.getSimpleName(), id));
     }
 
     private <T> List<T> read(Class<T> type, String sql) {
@@ -35,7 +44,7 @@ public class DataProviderJdbc extends AbstractDataProvider{
             ResultSet resultSet = statement.executeQuery(sql);
 
             log.debug(sql);
-            // list = getData(type, resultSet);
+            list = JdbcUtil.readData(type, resultSet);
 
             resultSet.close();
             statement.close();
@@ -58,11 +67,11 @@ public class DataProviderJdbc extends AbstractDataProvider{
     }
 
     private <T> boolean write(String methodName, T bean, long id) {
-        String tableName = bean.getClass().getSimpleName();
+        String tableName = JdbcUtil.tablePrefix + bean.getClass().getSimpleName();
         String sql = switch (methodName) {
-            case Constants.METHOD_NAME_APPEND -> JdbcUtil.insertIntoTableValues(tableName, bean);
+            case Constants.METHOD_NAME_APPEND -> JdbcUtil.insertIntoTableValues(tableName, JdbcUtil.beanToInsertString(bean));
             case Constants.METHOD_NAME_DELETE -> JdbcUtil.deleteFromTableById(tableName, id);
-            case Constants.METHOD_NAME_UPDATE -> JdbcUtil.updateTableSetById(tableName, bean, id);
+            case Constants.METHOD_NAME_UPDATE -> JdbcUtil.updateTableSetById(tableName, JdbcUtil.beanToUpdateString(bean), id);
             default -> "";
         };
 

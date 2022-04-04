@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import ru.sfedu.artsale.utils.JdbcUtil;
 import ru.sfedu.artsale.utils.converters.ProductConverter;
 import ru.sfedu.artsale.utils.converters.UserConverter;
 
@@ -32,6 +33,24 @@ public class Order implements Serializable {
         setId(id);
         setCustomer(customer);
         setProduct(product);
+    }
+
+    public static String toCreateTableString() {
+        return String.format(
+                "CREATE TABLE IF NOT EXISTS %sorder (id LONG PRIMARY KEY, customer VARCHAR, product VARCHAR);",
+                JdbcUtil.tablePrefix);
+    }
+
+    public String toInsertString() {
+        return "'" + getId() + "', '"
+                + new UserConverter().convertToWrite(getCustomer()) + "', '"
+                + new ProductConverter().convertToWrite(getProduct()) + "'";
+    }
+
+    public String toUpdateString() {
+        return "id = '" + getId() + "', "
+                + "customer = '" + new UserConverter().convertToWrite(getCustomer()) + "', "
+                + "product = '" + new ProductConverter().convertToWrite(getProduct()) + "'";
     }
 
     @Override

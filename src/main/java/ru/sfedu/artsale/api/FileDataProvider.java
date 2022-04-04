@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class FileDataProvider extends AbstractDataProvider {
-    protected String path;
-    protected String extension;
+    protected String filename;
 
     public FileDataProvider() throws IOException {
     }
@@ -45,14 +44,14 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     }
 
     /**
-     * Generates full file name by filePath, bean and fileExtension.
+     * Generates full file name by bean.
      *
      * @param type          bean to work with
      * @param <T>           generic class of bean
      * @return full filename string
      */
-    protected <T> String getName(Class<T> type) {
-        return path + type.getSimpleName() + extension;
+    protected <T> String getFileName(Class<T> type) {
+        return String.format(filename, type.getSimpleName());
     }
 
     @Override

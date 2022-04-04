@@ -3,6 +3,7 @@ package ru.sfedu.artsale.model.bean;
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import ru.sfedu.artsale.utils.JdbcUtil;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -39,6 +40,28 @@ public class User implements Serializable {
         setPhone(phone);
         setEmail(email);
         setAddress(address);
+    }
+
+    public static String toCreateTableString() {
+        return String.format(
+                "CREATE TABLE IF NOT EXISTS %suser (id LONG PRIMARY KEY, name VARCHAR, phone VARCHAR, email VARCHAR, address VARCHAR);",
+                JdbcUtil.tablePrefix);
+    }
+
+    public String toInsertString() {
+        return "'" + getId() + "', '"
+                + getName() + "', '"
+                + getPhone() + "', '"
+                + getEmail() + "', '"
+                + getAddress() + "'";
+    }
+
+    public String toUpdateString() {
+        return "id = '" + getId() + "', "
+                + "name = '" + getName() + "', "
+                + "phone = '" + getPhone() + "', "
+                + "email = '" + getEmail() + "', "
+                + "address = '" + getAddress() + "'";
     }
 
     @Override

@@ -12,7 +12,7 @@ public class ProductConverter extends AbstractBeanField<Product, String> {
     public static final String fieldsDelimiter = "::";
 
     @Override
-    protected Object convert(String s) {
+    public Product convert(String s) {
         String[] parsed = s.split(fieldsDelimiter);
         return switch (parsed.length) {
             case (3) -> new Product(Long.parseLong(parsed[0]), parsed[1], Double.parseDouble(parsed[2]));

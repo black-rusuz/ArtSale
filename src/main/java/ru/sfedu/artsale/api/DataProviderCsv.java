@@ -20,15 +20,14 @@ import java.util.List;
 public class DataProviderCsv extends FileDataProvider {
 
     public DataProviderCsv() throws IOException {
-        path = ConfigurationUtil.getConfigurationEntry(Constants.CSV_PATH);
-        extension = ".csv";
+        filename = ConfigurationUtil.getConfigurationEntry(Constants.CSV_PATH) + "%s.csv";
     }
 
     @Override
     protected <T> List<T> read(Class<T> type) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(getName(type));
+            File file = initFile(getFileName(type));
             if (file.length() > 0) {
                 CSVReader csvReader = new CSVReader(new FileReader(file));
                 CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader).withType(type).build();
@@ -44,7 +43,7 @@ public class DataProviderCsv extends FileDataProvider {
     @Override
     protected <T> boolean write(List<T> list, Class<T> type, String methodName) {
         try {
-            File file = initFile(getName(type));
+            File file = initFile(getFileName(type));
             CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
             StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(csvWriter).build();
             beanToCsv.write(list);

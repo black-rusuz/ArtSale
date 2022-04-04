@@ -17,15 +17,14 @@ import java.util.List;
 public class DataProviderXml extends FileDataProvider {
 
     public DataProviderXml() throws IOException {
-        path = ConfigurationUtil.getConfigurationEntry(Constants.XML_PATH);
-        extension = ".xml";
+        filename = ConfigurationUtil.getConfigurationEntry(Constants.XML_PATH) + "%s.xml";
     }
 
     @Override
     protected <T> List<T> read(Class<T> type) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(getName(type));
+            File file = initFile(getFileName(type));
             if (file.length() > 0) {
                 FileReader fileReader = new FileReader(file);
                 XmlWrapper<T> xmlWrapper = new Persister().read(XmlWrapper.class, fileReader);
@@ -41,7 +40,7 @@ public class DataProviderXml extends FileDataProvider {
     @Override
     protected <T> boolean write(List<T> list, Class<T> type, String methodName) {
         try {
-            File file = initFile(getName(type));
+            File file = initFile(getFileName(type));
             FileWriter fileWriter = new FileWriter(file);
             Serializer serializer = new Persister();
             serializer.write(new XmlWrapper<>(list), fileWriter);

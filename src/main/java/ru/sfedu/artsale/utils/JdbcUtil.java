@@ -1,113 +1,152 @@
 package ru.sfedu.artsale.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.sfedu.artsale.model.bean.*;
+import ru.sfedu.artsale.utils.converters.ProductConverter;
+import ru.sfedu.artsale.utils.converters.UserConverter;
 
-import java.util.LinkedHashMap;
-import java.util.stream.Collectors;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings({"unchecked", "javadoc"})
 public class JdbcUtil {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final String tablePrefix = "table_";
 
-    // ==============================
-    //              DML
-    // ==============================
+    // COMMANDS
     private static final String SELECT_ALL_FROM_TABLE = "SELECT * FROM %s;";
     private static final String SELECT_FROM_TABLE_BY_ID = "SELECT * FROM %s WHERE id = %d;";
     private static final String INSERT_INTO_TABLE_VALUES = "INSERT INTO %s VALUES (%s);";
     private static final String DELETE_FROM_TABLE_BY_ID = "DELETE FROM %s WHERE id = %d;";
     private static final String UPDATE_TABLE_SET_BY_ID = "UPDATE %s SET %s WHERE id = %d;";
 
-    private static final String SQL_COMMA = ", ";
-    private static final String SQL_VALUE_WRAPPER = "'%s'";
-    private static final String SQL_KEY_VALUE_WRAPPER = "%s = '%s'";
-
-    /**
-     * @param tableName
-     * @return Native SQL command for getting all recordset
-     */
+    // SQL
     public static String selectAllFromTable(String tableName) {
         return String.format(SELECT_ALL_FROM_TABLE, tableName);
     }
 
-    /**
-     * @param tableName
-     * @param id
-     * @return Native SQL command for getting record by id
-     */
     public static String selectFromTableById(String tableName, long id) {
         return String.format(SELECT_FROM_TABLE_BY_ID, tableName, id);
     }
 
-    /**
-     * @param tableName
-     * @param values    comma separated values
-     * @return Native SQL command for appending record
-     */
     public static <T> String insertIntoTableValues(String tableName, String values) {
         return String.format(INSERT_INTO_TABLE_VALUES, tableName, values);
     }
 
-    /**
-     * @param tableName
-     * @param id
-     * @return Native SQL command for deleting record
-     */
     public static String deleteFromTableById(String tableName, long id) {
         return String.format(DELETE_FROM_TABLE_BY_ID, tableName, id);
     }
 
-    /**
-     * @param tableName
-     * @param values    comma separated keys=values
-     * @param id
-     * @return Native SQL command for updating recordset by id
-     */
     public static <T> String updateTableSetById(String tableName, String values, long id) {
         return String.format(UPDATE_TABLE_SET_BY_ID, tableName, values, id);
     }
 
-
-    // ==============================
-    //              DDL
-    // ==============================
-    private static final String SQL_CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS %s (%s);";
-
-    private static final String ID = "id";
-    private static final String COLUMN_PRIMARY_KEY = " PRIMARY KEY";
-    private static final String COLUMN_TYPE_LONG = " LONG";
-    private static final String COLUMN_TYPE_INT = " INT";
-    private static final String COLUMN_TYPE_DOUBLE = " NUMERIC";
-    private static final String COLUMN_TYPE_STRING = " VARCHAR";
-
-    /**
-     * @param bean Serializable (recommended)
-     *             NOT CLASS because need to know fields datatype
-     * @return Native SQL command for creating table
-     */
-    public static <T> String createTable(T bean) {
-        LinkedHashMap<String, Object> map = objectMapper.convertValue(bean, LinkedHashMap.class);
-        return String.format(SQL_CREATE_TABLE_IF_NOT_EXISTS, bean.getClass().getSimpleName(), mapToColumns(map));
+    // WRITE
+    public static <T> String beanToInsertString(T bean) {
+        if (bean.getClass().equals(User.class))
+            return ((User) bean).toInsertString();
+        if (bean.getClass().equals(Product.class))
+            return ((Product) bean).toInsertString();
+        if (bean.getClass().equals(CreationKit.class))
+            return ((CreationKit) bean).toInsertString();
+        if (bean.getClass().equals(EndProduct.class))
+            return ((EndProduct) bean).toInsertString();
+        if (bean.getClass().equals(Order.class))
+            return ((Order) bean).toInsertString();
+        else return "";
     }
 
-    /**
-     * Generates String of fields for table using bean converted to HashMap
-     *
-     * @param map objectMapper.convertValue(bean, LinkedHashMap.class)
-     * @return String of column names with datatypes separated by commas
-     */
-    private static String mapToColumns(LinkedHashMap<String, Object> map) {
-        return map.entrySet().stream().map(e -> {
-            if (e.getKey().equals(ID))
-                return e.getKey() + COLUMN_TYPE_LONG + COLUMN_PRIMARY_KEY;
-            else if (e.getValue().getClass().equals(Long.class))
-                return e.getKey() + COLUMN_TYPE_LONG;
-            else if (e.getValue().getClass().equals(Integer.class))
-                return e.getKey() + COLUMN_TYPE_INT;
-            else if (e.getValue().getClass().equals(Double.class))
-                return e.getKey() + COLUMN_TYPE_DOUBLE;
-            else
-                return e.getKey() + COLUMN_TYPE_STRING;
-        }).collect(Collectors.joining(SQL_COMMA));
+    public static <T> String beanToUpdateString(T bean) {
+        if (bean.getClass().equals(User.class))
+            return ((User) bean).toUpdateString();
+        if (bean.getClass().equals(Product.class))
+            return ((Product) bean).toUpdateString();
+        if (bean.getClass().equals(CreationKit.class))
+            return ((CreationKit) bean).toUpdateString();
+        if (bean.getClass().equals(EndProduct.class))
+            return ((EndProduct) bean).toUpdateString();
+        if (bean.getClass().equals(Order.class))
+            return ((Order) bean).toUpdateString();
+        else return "";
+    }
+
+    // READ
+    public static <T> List<T> readData(Class<T> type, ResultSet resultSet) throws SQLException {
+        List list = new ArrayList<>();
+        if (type.equals(User.class))
+            list = readUser(resultSet);
+        else if (type.equals(Product.class))
+            list = readProduct(resultSet);
+        else if (type.equals(CreationKit.class))
+            list = readCreationKit(resultSet);
+        else if (type.equals(EndProduct.class))
+            list = readEndProduct(resultSet);
+        else if (type.equals(Order.class))
+            list = readOrder(resultSet);
+        return list;
+    }
+
+    public static List<User> readUser(ResultSet resultSet) throws SQLException {
+        List<User> list = new ArrayList<>();
+        while (resultSet.next()) {
+            User user = new User();
+            user.setId(resultSet.getLong(1));
+            user.setName(resultSet.getString(2));
+            user.setPhone(resultSet.getString(3));
+            user.setEmail(resultSet.getString(4));
+            user.setAddress(resultSet.getString(5));
+            list.add(user);
+        }
+        return list;
+    }
+
+    public static List<Product> readProduct(ResultSet resultSet) throws SQLException {
+        List<Product> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Product product = new Product();
+            product.setId(resultSet.getLong(1));
+            product.setName(resultSet.getString(2));
+            product.setPrice(resultSet.getDouble(3));
+            list.add(product);
+        }
+        return list;
+    }
+
+    public static List<CreationKit> readCreationKit(ResultSet resultSet) throws SQLException {
+        List<CreationKit> list = new ArrayList<>();
+        while (resultSet.next()) {
+            CreationKit creationKit = new CreationKit();
+            creationKit.setId(resultSet.getLong(1));
+            creationKit.setName(resultSet.getString(2));
+            creationKit.setPrice(resultSet.getDouble(3));
+            creationKit.setCategory(resultSet.getString(4));
+            creationKit.setComposition(resultSet.getString(5));
+            list.add(creationKit);
+        }
+        return list;
+    }
+
+    public static List<EndProduct> readEndProduct(ResultSet resultSet) throws SQLException {
+        List<EndProduct> list = new ArrayList<>();
+        while (resultSet.next()) {
+            EndProduct endProduct = new EndProduct();
+            endProduct.setId(resultSet.getLong(1));
+            endProduct.setName(resultSet.getString(2));
+            endProduct.setPrice(resultSet.getDouble(3));
+            endProduct.setWarranty(resultSet.getInt(4));
+            list.add(endProduct);
+        }
+        return list;
+    }
+
+    public static List<Order> readOrder(ResultSet resultSet) throws SQLException {
+        List<Order> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Order order = new Order();
+            order.setId(resultSet.getLong(1));
+            order.setCustomer(new UserConverter().convert(resultSet.getString(2)));
+            order.setProduct(new ProductConverter().convert(resultSet.getString(3)));
+            list.add(order);
+        }
+        return list;
     }
 }

@@ -3,6 +3,7 @@ package ru.sfedu.artsale.model.bean;
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import ru.sfedu.artsale.utils.JdbcUtil;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -38,6 +39,24 @@ public class Product implements Serializable {
         return getId() == product.getId()
                 && Double.compare(product.getPrice(), getPrice()) == 0
                 && Objects.equals(getName(), product.getName());
+    }
+
+    public static String toCreateTableString() {
+        return String.format(
+                "CREATE TABLE IF NOT EXISTS %sproduct (id LONG PRIMARY KEY, name VARCHAR, price NUMERIC);",
+                JdbcUtil.tablePrefix);
+    }
+
+    public String toInsertString() {
+        return "'" + getId() + "', '"
+                + getName() + "', '"
+                + getPrice() + "'";
+    }
+
+    public String toUpdateString() {
+        return "id = '" + getId() + "', "
+                + "name = '" + getName() + "', "
+                + "price = '" + getPrice() + "'";
     }
 
     @Override

@@ -2,6 +2,7 @@ package ru.sfedu.artsale.model.bean;
 
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Element;
+import ru.sfedu.artsale.utils.JdbcUtil;
 
 import java.util.Objects;
 
@@ -23,6 +24,28 @@ public class CreationKit extends Product {
         super(id, name, price);
         setCategory(category);
         setComposition(composition);
+    }
+
+    public static String toCreateTableString() {
+        return String.format(
+                "CREATE TABLE IF NOT EXISTS %screationKit (id LONG PRIMARY KEY, name VARCHAR, price NUMERIC, category VARCHAR, composition VARCHAR);",
+                JdbcUtil.tablePrefix);
+    }
+
+    public String toInsertString() {
+        return "'" + getId() + "', '"
+                + getName() + "', '"
+                + getPrice() + "', '"
+                + getCategory() + "', '"
+                + getComposition() + "'";
+    }
+
+    public String toUpdateString() {
+        return "id = '" + getId() + "', "
+                + "name = '" + getName() + "', "
+                + "price = '" + getPrice() + "', "
+                + "category = '" + getCategory() + "', "
+                + "composition = '" + getComposition() + "'";
     }
 
     @Override
