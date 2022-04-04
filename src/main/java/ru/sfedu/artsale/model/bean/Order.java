@@ -4,8 +4,8 @@ import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import ru.sfedu.artsale.utils.ProductConverter;
-import ru.sfedu.artsale.utils.UserConverter;
+import ru.sfedu.artsale.utils.converters.ProductConverter;
+import ru.sfedu.artsale.utils.converters.UserConverter;
 
 import java.io.Serializable;
 import java.util.Objects;

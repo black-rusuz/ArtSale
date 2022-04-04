@@ -101,51 +101,6 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     }
 
     @Override
-    public List<Order> getOrders() {
-        return read(Order.class);
-    }
-
-    @Override
-    public Order getOrder(long id) {
-        List<Order> list = getOrders().stream().filter(e -> e.getId() == id).toList();
-        return list.isEmpty() ? new Order() : list.get(0);
-    }
-
-    @Override
-    public long insertOrder(Order order) {
-        long id = order.getId();
-        if (getOrder(id).getId() != 0)
-            order.setId(System.currentTimeMillis());
-        List<Order> list = getOrders();
-        list.add(order);
-        write(list, Order.class, Constants.METHOD_NAME_APPEND);
-        return order.getId();
-    }
-
-    @Override
-    public boolean deleteOrder(long id) {
-        if (getOrder(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
-            return false;
-        }
-        List<Order> list = getOrders();
-        list.removeIf(e -> (e.getId() == id));
-        return write(list, Order.class, Constants.METHOD_NAME_DELETE);
-    }
-
-    @Override
-    public boolean updateOrder(Order order) {
-        long id = order.getId();
-        if (getOrder(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
-            return false;
-        }
-        List<Order> list = getOrders();
-        list.set(list.indexOf(getOrder(order.getId())), order);
-        return write(list, Order.class, Constants.METHOD_NAME_UPDATE);
-    }
-
-    @Override
     public List<Product> getProducts() {
         return read(Product.class);
     }
@@ -278,5 +233,50 @@ public abstract class FileDataProvider extends AbstractDataProvider {
         List<EndProduct> list = getEndProducts();
         list.set(list.indexOf(getEndProduct(endProduct.getId())), endProduct);
         return write(list, EndProduct.class, Constants.METHOD_NAME_UPDATE);
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        return read(Order.class);
+    }
+
+    @Override
+    public Order getOrder(long id) {
+        List<Order> list = getOrders().stream().filter(e -> e.getId() == id).toList();
+        return list.isEmpty() ? new Order() : list.get(0);
+    }
+
+    @Override
+    public long insertOrder(Order order) {
+        long id = order.getId();
+        if (getOrder(id).getId() != 0)
+            order.setId(System.currentTimeMillis());
+        List<Order> list = getOrders();
+        list.add(order);
+        write(list, Order.class, Constants.METHOD_NAME_APPEND);
+        return order.getId();
+    }
+
+    @Override
+    public boolean deleteOrder(long id) {
+        if (getOrder(id).getId() == 0) {
+            log.warn(Constants.MESSAGE_NOT_FOUND);
+            return false;
+        }
+        List<Order> list = getOrders();
+        list.removeIf(e -> (e.getId() == id));
+        return write(list, Order.class, Constants.METHOD_NAME_DELETE);
+    }
+
+    @Override
+    public boolean updateOrder(Order order) {
+        long id = order.getId();
+        if (getOrder(id).getId() == 0) {
+            log.warn(Constants.MESSAGE_NOT_FOUND);
+            return false;
+        }
+        List<Order> list = getOrders();
+        list.set(list.indexOf(getOrder(order.getId())), order);
+        return write(list, Order.class, Constants.METHOD_NAME_UPDATE);
     }
 }

@@ -13,10 +13,10 @@ public class XmlWrapper<T> implements Serializable {
 
     @ElementListUnion({
             @ElementList(inline = true, required = false, type = User.class),
-            @ElementList(inline = true, required = false, type = Order.class),
             @ElementList(inline = true, required = false, type = Product.class),
             @ElementList(inline = true, required = false, type = CreationKit.class),
             @ElementList(inline = true, required = false, type = EndProduct.class),
+            @ElementList(inline = true, required = false, type = Order.class),
     })
     private List<T> list;
 

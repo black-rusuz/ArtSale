@@ -44,12 +44,6 @@ public abstract class AbstractDataProvider {
     public abstract boolean deleteUser(long id);
     public abstract boolean updateUser(User user);
 
-    public abstract List<Order> getOrders();
-    public abstract Order getOrder(long id);
-    public abstract long insertOrder(Order order);
-    public abstract boolean deleteOrder(long id);
-    public abstract boolean updateOrder(Order order);
-
     public abstract List<Product> getProducts();
     public abstract Product getProduct(long id);
     public abstract long insertProduct(Product product);
@@ -67,4 +61,10 @@ public abstract class AbstractDataProvider {
     public abstract long insertEndProduct(EndProduct endProduct);
     public abstract boolean deleteEndProduct(long id);
     public abstract boolean updateEndProduct(EndProduct endProduct);
+
+    public abstract List<Order> getOrders();
+    public abstract Order getOrder(long id);
+    public abstract long insertOrder(Order order);
+    public abstract boolean deleteOrder(long id);
+    public abstract boolean updateOrder(Order order);
 }

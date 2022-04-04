@@ -1,4 +1,4 @@
-package ru.sfedu.artsale.utils;
+package ru.sfedu.artsale.utils.converters;
 
 import com.opencsv.bean.AbstractBeanField;
 import ru.sfedu.artsale.model.bean.CreationKit;
