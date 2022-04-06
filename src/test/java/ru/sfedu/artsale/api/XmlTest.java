@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 
-public class XmlTest extends CrudTest {
+public class XmlTest extends AbstractTest {
 
     @BeforeEach
     void setUp() throws IOException {

@@ -4,13 +4,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.sfedu.artsale.Constants;
 import ru.sfedu.artsale.model.bean.*;
 import ru.sfedu.artsale.utils.TestData;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
-abstract class CrudTest extends TestData {
+abstract class AbstractTest extends TestData {
     AbstractDataProvider dataProvider;
 
     @BeforeEach
@@ -63,6 +66,87 @@ abstract class CrudTest extends TestData {
         dataProvider.deleteOrder(o2.getId());
         dataProvider.deleteOrder(o3.getId());
         dataProvider.deleteOrder(o4.getId());
+    }
+
+    @Test
+    void viewProductsPos() {
+        Assertions.assertEquals(List.of(p1, p2, p3, p4), dataProvider.viewProducts(Constants.PRODUCT, 0));
+        Assertions.assertEquals(List.of(ck1, ck2, ck3, ck4), dataProvider.viewProducts(Constants.CREATIONKIT, 0));
+        Assertions.assertEquals(List.of(ep1, ep2, ep3, ep4), dataProvider.viewProducts(Constants.ENDPRODUCT, 0));
+    }
+
+    @Test
+    void viewProductsNeg() {
+        Assertions.assertNotEquals(new ArrayList<>(), dataProvider.viewProducts(Constants.PRODUCT, 0));
+        Assertions.assertNotEquals(new ArrayList<>(), dataProvider.viewProducts(Constants.CREATIONKIT, 0));
+        Assertions.assertNotEquals(new ArrayList<>(), dataProvider.viewProducts(Constants.ENDPRODUCT, 0));
+    }
+
+    @Test
+    void filterViewPos() {
+        Assertions.assertEquals(List.of(p1, p2, p3, p4), dataProvider.filterView(Constants.PRODUCT));
+        Assertions.assertEquals(List.of(ck1, ck2, ck3, ck4), dataProvider.filterView(Constants.CREATIONKIT));
+        Assertions.assertEquals(List.of(ep1, ep2, ep3, ep4), dataProvider.filterView(Constants.ENDPRODUCT));
+    }
+
+    @Test
+    void filterViewNeg() {
+        Assertions.assertNotEquals(new ArrayList<>(), dataProvider.filterView(Constants.PRODUCT));
+        Assertions.assertNotEquals(new ArrayList<>(), dataProvider.filterView(Constants.CREATIONKIT));
+        Assertions.assertNotEquals(new ArrayList<>(), dataProvider.filterView(Constants.ENDPRODUCT));
+    }
+
+    @Test
+    void orderProductPos() {
+        Order expectedOrder = new Order(99, u2, p1);
+        Order actualOrder = dataProvider.orderProduct(21).get();
+        expectedOrder.setId(actualOrder.getId());
+        Assertions.assertEquals(expectedOrder, actualOrder);
+        dataProvider.deleteOrder(actualOrder.getId());
+    }
+
+    @Test
+    void orderProductNeg() {
+        Order expectedOrder = new Order(99, u2, p1);
+        Order actualOrder = dataProvider.orderProduct(21).get();
+        Assertions.assertNotEquals(expectedOrder, actualOrder);
+        dataProvider.deleteOrder(actualOrder.getId());
+    }
+
+    @Test
+    void viewUserDataPos() {
+        Assertions.assertEquals(u1, dataProvider.viewUserData(u1.getId(), false).get());
+    }
+
+    @Test
+    void viewUserDataNeg() {
+        Assertions.assertNotEquals(u1, dataProvider.viewUserData(u2.getId(), false).get());
+    }
+
+    @Test
+    void viewUserOrdersPos() {
+        List<Order> expectedOrders = List.of(o1, o3);
+        List<Order> actualOrders = dataProvider.viewUserOrders(u1.getId());
+        Assertions.assertEquals(expectedOrders, actualOrders);
+    }
+
+    @Test
+    void viewUserOrdersNeg() {
+        List<Order> expectedOrders = List.of(o1, o3);
+        List<Order> actualOrders = dataProvider.viewUserOrders(u2.getId());
+        Assertions.assertNotEquals(expectedOrders, actualOrders);
+    }
+
+    @Test
+    void calculateAmountPos() {
+        double expectedSum = p1.getPrice() + ck1.getPrice();
+        double actualSum = dataProvider.calculateAmount(u1.getId());
+        Assertions.assertEquals(expectedSum, actualSum);
+    }
+
+    @Test
+    void calculateAmountNeg() {
+        Assertions.assertEquals(0, dataProvider.calculateAmount(System.currentTimeMillis()));
     }
 
     @Test
