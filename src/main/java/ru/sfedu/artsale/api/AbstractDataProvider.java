@@ -11,9 +11,12 @@ import ru.sfedu.artsale.utils.MongoUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public abstract class AbstractDataProvider {
     protected final Logger log = LogManager.getLogger(this.getClass());
@@ -26,22 +29,40 @@ public abstract class AbstractDataProvider {
     /**
      * Показать доступные товары и заказать выбранный
      *
-     * @param filter    Товары без категории, наборы для творчества, готовые произведения искусства или всё подряд (Products/CreationKits/EndProducts/Any)
+     * @param filter    Товары без категории, наборы для творчества, готовые произведения искусства или всё подряд
+     *                  (Products/CreationKits/EndProducts/Any)
      * @param productId ID товара для заказа
      * @return Список доступных товаров
      */
     public List<Product> viewProducts(String filter, long productId) {
-        return null;
+        if (productId != 0) orderProduct(productId);
+        return filterView(filter);
     }
 
     /**
      * Фильтр товаров
      *
-     * @param filter Товары без категории, наборы для творчества, готовые произведения искусства или всё подряд (Products/CreationKits/EndProducts/Any)
+     * @param filter Товары без категории, наборы для творчества, готовые произведения искусства или всё подряд
+     *               (Product/CreationKit/EndProduct/Any)
      * @return Отфильтрованнный список доступных товаров
      */
     public List<Product> filterView(String filter) {
-        return null;
+        List<Product> allProducts = new ArrayList<>();
+        allProducts.addAll(getProducts());
+        allProducts.addAll(getCreationKits());
+        allProducts.addAll(getEndProducts());
+
+        List filteredProducts = switch (filter.toLowerCase()) {
+            case (Constants.PRODUCT) -> getProducts();
+            case (Constants.CREATIONKIT) -> getCreationKits();
+            case (Constants.ENDPRODUCT) -> getEndProducts();
+            default -> allProducts;
+        };
+
+        log.info(Constants.PRODUCTS + filteredProducts.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining("\n")));
+        return filteredProducts;
     }
 
     /**
@@ -51,55 +72,61 @@ public abstract class AbstractDataProvider {
      * @return Сформированный заказ для пользователя, чьи контактные данные были оставлены последними
      */
     public Optional<Order> orderProduct(long productId) {
-        return Optional.empty();
+        User lastUser = getUsers().get(getUsers().size() - 1);
+        Order order = new Order(System.currentTimeMillis(), lastUser, getProduct(productId));
+        insertOrder(order);
+        log.info(Constants.ORDER + order);
+        return Optional.of(order);
     }
 
     /**
-     * Оставить контактные данные для заказов
+     * Просмотр информации о пользователе.
      *
-     * @param name    имя
-     * @param phone   телефон
-     * @param email   почта
-     * @param address адрес доставки
-     * @return Созданный пользователь
+     * @param userId    ID пользователя
+     * @param calculate true для подсчёта итоговой суммы всех покупок пользователя
+     * @return пользовательские контактные данные
      */
-    public Optional<User> leaveUserData(String name, String phone, String email, String address) {
-        return Optional.empty();
+    public Optional<User> viewUserData(long userId, boolean calculate) {
+        User requestedUser = getUser(userId);
+        log.info(Constants.USER + requestedUser);
+        viewUserOrders(userId);
+        if (calculate) calculateAmount(userId);
+        return Optional.of(requestedUser);
     }
 
     /**
-     * Оставить контактные данные для связи
+     * Просмотр товаров, заказанных пользователем с указанным ID
      *
-     * @param name  имя
-     * @param phone телефон
-     * @param email почта
-     * @return Созданные пользовательские данные
+     * @param userId ID пользователя
+     * @return список заказов пользователя
      */
-    public Optional<User> leaveContactDetails(String name, String phone, String email) {
-        return Optional.empty();
+    public List<Order> viewUserOrders(long userId) {
+        List<Order> userOrders = getOrders();
+        userOrders = userOrders.stream().filter(order -> order.getCustomer().getId() == userId).toList();
+        log.info(Constants.USER_ORDERS + userOrders.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining("\n")));
+        return userOrders;
     }
 
     /**
-     * Оставить контактные данные для доставки
+     * Подсчёт итоговой суммы, потраченной на все заказы выбранного пользователя
      *
-     * @param name    имя
-     * @param address телефон
-     * @return Созданные пользовательские данные
+     * @param userId ID пользователя
+     * @return итоговая сумма
      */
-    public Optional<User> leaveAddress(String name, String address) {
-        return Optional.empty();
+    public double calculateAmount(long userId) {
+        List<Order> orders = getOrders().stream().filter(order -> order.getCustomer().getId() == userId).toList();
+        AtomicReference<Double> amount = new AtomicReference<>(0.00);
+        orders.forEach(order -> amount.updateAndGet(v -> v + order.getProduct().getPrice()));
+        log.info(Constants.USER_AMOUNT + amount.get());
+        return amount.get();
     }
 
     // Service
     protected void sendLogs(String methodName, Object bean, Result result) {
-        HistoryContent historyContent = new HistoryContent(
-                UUID.randomUUID(),
-                this.getClass().getSimpleName(),
-                LocalDateTime.now().toString(),
-                MONGO_ACTOR,
-                methodName,
-                MongoUtil.objectToString(bean),
-                result);
+        HistoryContent historyContent = new HistoryContent(UUID.randomUUID(), this.getClass().getSimpleName(),
+                LocalDateTime.now().toString(), MONGO_ACTOR, methodName, MongoUtil.objectToString(bean), result);
         if (MONGO_ENABLE) MongoUtil.saveToLog(historyContent);
     }
 

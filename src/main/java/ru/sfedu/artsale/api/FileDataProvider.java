@@ -79,7 +79,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public boolean deleteUser(long id) {
         if (getUser(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<User> list = getUsers();
@@ -91,7 +91,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     public boolean updateUser(User user) {
         long id = user.getId();
         if (getUser(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<User> list = getUsers();
@@ -124,7 +124,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public boolean deleteProduct(long id) {
         if (getProduct(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<Product> list = getProducts();
@@ -136,7 +136,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     public boolean updateProduct(Product product) {
         long id = product.getId();
         if (getProduct(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<Product> list = getProducts();
@@ -169,7 +169,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public boolean deleteCreationKit(long id) {
         if (getCreationKit(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<CreationKit> list = getCreationKits();
@@ -181,7 +181,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     public boolean updateCreationKit(CreationKit creationKit) {
         long id = creationKit.getId();
         if (getCreationKit(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<CreationKit> list = getCreationKits();
@@ -214,7 +214,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public boolean deleteEndProduct(long id) {
         if (getEndProduct(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<EndProduct> list = getEndProducts();
@@ -226,7 +226,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     public boolean updateEndProduct(EndProduct endProduct) {
         long id = endProduct.getId();
         if (getEndProduct(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<EndProduct> list = getEndProducts();
@@ -259,7 +259,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public boolean deleteOrder(long id) {
         if (getOrder(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<Order> list = getOrders();
@@ -271,7 +271,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     public boolean updateOrder(Order order) {
         long id = order.getId();
         if (getOrder(id).getId() == 0) {
-            log.warn(Constants.MESSAGE_NOT_FOUND);
+            log.warn(Constants.NOT_FOUND);
             return false;
         }
         List<Order> list = getOrders();

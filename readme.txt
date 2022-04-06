@@ -2,9 +2,9 @@
 1. viewProducts(String filter, long productId) — Показать доступные товары и заказать выбранный
 2. filterView(String filter) — Фильтр товаров
 3. orderProduct(long productId) — Заказ выбранного товара
-4. leaveUserData(String name, String phone, String email, String address) — Оставить контактные данные для заказов
-5. leaveContactDetails(String name, String phone, String email) — Оставить контактные данные для связи
-6. leaveAddress(String name, String address) — Оставить контактные данные для доставки
+4. viewUserData(long userId, boolean calculate) - Просмотр информации о пользователе
+5. viewUserOrders(long userId) - Просмотр товаров, заказанных пользователем с указанным ID
+6. calculateAmount(long userId) - Подсчёт итоговой суммы, потраченной на все заказы выбранного пользователя
 
 Параметры:
 Для environment.properties: -Denv
@@ -16,9 +16,9 @@ XML
 JDBC
 
 Примеры команд запуска:
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar XML
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar XML
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar CSV
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar CSV
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar JDBC
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar JDBC
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar XML viewProducts any 21
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar XML filterView product
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar CSV orderProduct 21
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar CSV viewUserData 51 true
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar JDBC viewUserOrders 51
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar JDBC calculateAmount 51

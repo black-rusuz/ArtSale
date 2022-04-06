@@ -26,13 +26,32 @@ public class Constants {
     public static final String METHOD_NAME_DELETE = "Delete";
     public static final String METHOD_NAME_UPDATE = "Update";
 
-    public static final String MESSAGE_NOT_FOUND = "Record with this ID not found";
-    public static final String MESSAGE_SUCCESS = "Records wrote successfully";
-    public static final String MESSAGE_ERROR = "Error while writing: ";
+    // Info
+    public static final String NOT_FOUND = "Record with this ID not found";
+    public static final String PRODUCTS = "Available products: \n";
+    public static final String ORDER = "Created order: \n";
+    public static final String USER = "Requested user: \n";
+    public static final String USER_ORDERS = "Selected user's orders: \n";
+    public static final String USER_AMOUNT = "Selected user's amount sum: ";
 
     // CLI
-    public static final String CLI_ARG_XML = "XML";
-    public static final String CLI_ARG_JDBC = "JDBC";
-    public static final String CLI_ARG_CSV = "CSV";
+    public static final String XML = "XML";
+    public static final String JDBC = "JDBC";
+    public static final String CSV = "CSV";
+
+    public static final String FEW_ARGS = "Few arguments";
+    public static final String WRONG_DP = "Wrong type of DataProvider";
+    public static final String WRONG_ARG = "Wrong argument";
+
+    public static final String ARG_VIEWPRODUCTS = "VIEWPRODUCTS";
+    public static final String ARG_FILTERVIEW = "FILTERVIEW";
+    public static final String ARG_ORDERPRODUCT = "ORDERPRODUCT";
+    public static final String ARG_VIEWUSERDATA = "VIEWUSERDATA";
+    public static final String ARG_VIEWUSERORDERS = "VIEWUSERORDERS";
+    public static final String ARG_CALCULATEAMOUNT = "CALCULATEAMOUNT";
+
+    public static final String PRODUCT = "product";
+    public static final String CREATIONKIT = "creationkit";
+    public static final String ENDPRODUCT = "endproduct";
 
 }
