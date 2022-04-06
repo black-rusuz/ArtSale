@@ -19,6 +19,6 @@ JDBC
 java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar XML viewProducts any 21
 java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar XML filterView product
 java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar CSV orderProduct 21
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar CSV viewUserData 51 true
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar JDBC viewUserOrders 51
-java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar JDBC calculateAmount 51
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar CSV viewUserData 12 true
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar JDBC viewUserOrders 12
+java -jar -Denv=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./ArtSale.jar JDBC calculateAmount 12
